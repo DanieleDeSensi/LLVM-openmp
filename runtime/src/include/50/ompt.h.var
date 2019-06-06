@@ -151,7 +151,8 @@
     macro (ompt_callback_flush,             ompt_callback_flush_t,             29) /* after executing flush           */ \
                                                                                                                          \
     macro (ompt_callback_cancel,            ompt_callback_cancel_t,            30) /* cancel innermost binding region */ \
-    macro (ompt_callback_idle,              ompt_callback_idle_t,              31) /* begin or end idle state         */
+    macro (ompt_callback_idle,              ompt_callback_idle_t,              31) /* begin or end idle state         */ \
+    macro (ompt_callback_chunk,             ompt_callback_chunk_t,             32) /* parallel for chunk (d.desensi)  */
 
 
 
@@ -492,6 +493,11 @@ typedef void (*ompt_callback_master_t) (
 
 typedef void (*ompt_callback_idle_t) (
     ompt_scope_endpoint_t endpoint        /* endpoint of idle time               */
+);
+
+// d.desensi
+typedef void (*ompt_callback_chunk_t) (
+    unsigned long long chunk_size         /* size of the chunk                   */
 );
 
 typedef enum ompt_work_type_t {

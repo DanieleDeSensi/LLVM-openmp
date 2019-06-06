@@ -1807,6 +1807,7 @@ int __kmp_dispatch_next_algorithm(int gtid,
 /* Define a macro for exiting __kmp_dispatch_next(). If status is 0 (no more
    work), then tell OMPT the loop is over. In some cases kmp_dispatch_fini()
    is not called. */
+// 9999 to indicate iteration
 #if OMPT_SUPPORT && OMPT_OPTIONAL
 #define OMPT_LOOP_END                                                          \
   if (status == 0) {                                                           \
@@ -1816,6 +1817,16 @@ int __kmp_dispatch_next_algorithm(int gtid,
       ompt_callbacks.ompt_callback(ompt_callback_work)(                        \
           ompt_work_loop, ompt_scope_end, &(team_info->parallel_data),         \
           &(task_info->task_data), 0, codeptr);                                \
+    }                                                                          \
+  }else{                                                                       \
+    if (ompt_enabled.ompt_callback_chunk) {                                    \
+      unsigned long long chunk_size = 0;                                       \
+      if(*p_ub > *p_lb){                                                       \
+        chunk_size = *p_ub - *p_lb + 1;                                        \
+      }else{                                                                   \
+        chunk_size = *p_lb - *p_ub + 1;                                        \
+      }                                                                        \
+      ompt_callbacks.ompt_callback(ompt_callback_chunk)(chunk_size);           \
     }                                                                          \
   }
 // TODO: implement count
@@ -1983,7 +1994,7 @@ static int __kmp_dispatch_next(ident_t *loc, int gtid, kmp_int32 *p_last,
     if (pr->flags.use_hier)
       status = sh->hier->next(loc, gtid, pr, &last, p_lb, p_ub, p_st);
     else
-#endif // KMP_USE_HIER_SCHED
+#endif // KMP_USE_HIER_SCHED      
       status = __kmp_dispatch_next_algorithm<T>(gtid, pr, sh, &last, p_lb, p_ub,
                                                 p_st, th->th.th_team_nproc,
                                                 th->th.th_info.ds.ds_tid);

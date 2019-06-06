@@ -107,4 +107,6 @@
 
 #define ompt_callback_idle_implemented ompt_event_MAY_ALWAYS_OPTIONAL
 
+#define ompt_callback_chunk_implemented ompt_event_MAY_ALWAYS_OPTIONAL
+
 #endif
